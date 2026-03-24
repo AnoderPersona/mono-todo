@@ -111,15 +111,20 @@ export const Confetti = ConfettiComponent
 
 interface ConfettiButtonProps extends React.ComponentProps<"button"> {
   options?: ConfettiOptions &
-    ConfettiGlobalOptions & { canvas?: HTMLCanvasElement }
+    ConfettiGlobalOptions & { canvas?: HTMLCanvasElement },
+  clickFunction?: () => void
 }
 
 const ConfettiButtonComponent = ({
   options,
   children,
+  clickFunction,
   ...props
 }: ConfettiButtonProps) => {
   const handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (clickFunction) {
+      clickFunction()
+    }
     try {
       const rect = event.currentTarget.getBoundingClientRect()
       const x = rect.left + rect.width / 2
@@ -134,6 +139,7 @@ const ConfettiButtonComponent = ({
     } catch (error) {
       console.error("Confetti button error:", error)
     }
+
   }
 
   return (

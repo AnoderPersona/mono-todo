@@ -1,6 +1,6 @@
 export const themes = {
   light: "caramellatte",
-  dark: "forest",
+  dark: "halloween",
 } as const
 
 export type ThemeKey = keyof typeof themes

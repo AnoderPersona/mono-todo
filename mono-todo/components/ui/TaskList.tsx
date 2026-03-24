@@ -5,28 +5,55 @@ import RegularTask from "@/components/ui/RegularTask";
 import CreateTask from "./CreateTask";
 import { AnimatedThemeToggler } from "./magicUI/animated-theme-toggler";
 import FillTask from "./FillTask";
+import { useState, useEffect } from "react";
 
 export default function Home() {
-    const taskName = "Tarea muy importante que está seleccionada";
-    const taskDescription = "Esta es la descripción de la tarea seleccionada, que es muy importante y tiene un progreso del 75%";
-    const percentage = 75;
-    const taskNames = ["Tarea siguiente 1", "Tarea siguiente 2", "Tarea siguiente 3"];
-  
-    const handleClick = (id: number) => {
-        localStorage.setItem(`tasks_${id}`, JSON.stringify('holis'));
+    // const percentage = 75;
+    const [addingTask, setAddingTask] = useState(false);
+    const [savedTasks, setSavedTasks] = useState<any[]>([]);
+    const [percentage, setPercentage] = useState(0);
+
+    useEffect(() => {
+        const tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
+        setSavedTasks(tasks);
+    }, []);
+
+    const regularTasks = savedTasks?.filter((task: any) => !task.selected) ?? [];
+    const selectedTask = savedTasks?.find((task: any) => task.selected) ?? null;
+
+    const handleClick = () => {
+        setAddingTask(true);
+    }
+    
+    console.log(regularTasks);
+
+    const selectTask = (id_task: string, subtasks: any[]) => {
+        const updatedTasks = savedTasks.map((task: any) => {
+            if (task.task_id === id_task) {
+                return { ...task, selected: true };
+            } else {
+                return { ...task, selected: false };
+            }
+        });
+        const percentage = subtasks.filter(subtask => subtask.completed).length / subtasks.length * 100 || 0;
+        setSavedTasks(updatedTasks);
+        setPercentage(percentage);
+        localStorage.setItem("tasks", JSON.stringify(updatedTasks));
     }
     
     return (
-    <main className="min-h-screen w-full max-w-3xl py-32 px-10 bg-base-100 flex flex-col items-end">
+    <main className="min-h-screen w-full max-w-3xl py-5 px-10 bg-base-100 flex flex-col items-end">
         <AnimatedThemeToggler className="pb-2"/>
-        <SelectedTask taskName={taskName} taskDescription={taskDescription} percentage={percentage} />
+        {selectedTask && <SelectedTask taskName={selectedTask.task} taskId={selectedTask.task_id} taskDescription={selectedTask.desc} subtasks={selectedTask.subtasks} percentage={percentage} setPercentage={setPercentage} setSavedTasks={setSavedTasks}/>}
         {
-            taskNames.map((name, index) => (
-                <RegularTask key={index} taskName={name} />
+            regularTasks.map((task, index) => (
+                <RegularTask key={index} task_id={task.task_id} taskName={task.task} onClick={() => selectTask(task.task_id, task.subtasks)}/>
             ))
         }
-        <FillTask />
-        <CreateTask onClick={() => handleClick(1)} />
+        {
+            addingTask && <FillTask setSavedTasks={setSavedTasks} setAddingTask={setAddingTask}/>
+        }
+        <CreateTask onClick={() => handleClick()} />
     </main>
   );
 }
