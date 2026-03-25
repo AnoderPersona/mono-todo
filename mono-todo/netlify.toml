@@ -1,6 +1,6 @@
 [build]
-  base = "mono-todo"
   command = "pnpm build"
+  publish = ".next"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
