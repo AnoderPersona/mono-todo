@@ -14,7 +14,7 @@ function FillTask({ setSavedTasks, setAddingTask }: { setSavedTasks: any, setAdd
         const tarea = formData.get("tarea");
         const desc = formData.get("desc");
         // getAll te dará un arreglo con todo lo que se escribió en los inputs llamados "subtarea"
-        const subtasks = formData.getAll("subtarea").map((subtask) => (subtask ? { name: subtask, completed: false } : null)).filter(subtask => subtask !== null); 
+        const subtasks = formData.getAll("subtarea").map((subtask) => (subtask ? { name: subtask, completed: false, subtask_id: generateId() } : null)).filter(subtask => subtask !== null); 
 
         console.log('subtasks',subtasks);
         

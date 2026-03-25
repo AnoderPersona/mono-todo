@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-import { themes } from "@/lib/themes";
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 
@@ -36,19 +35,17 @@ export default function RootLayout({
                 const theme = localStorage.getItem('theme');
                 if (theme === 'dark') {
                   document.documentElement.classList.add('dark');
-                  document.documentElement.setAttribute('data-theme', '${themes.dark}');
+                  document.documentElement.setAttribute('data-theme', 'halloween');
                 } else {
                   document.documentElement.classList.remove('dark');
-                  document.documentElement.setAttribute('data-theme', '${themes.light}');
+                  document.documentElement.setAttribute('data-theme', 'caramellatte');
                 }
               } catch (e) {}
             `,
           }}
         />
       </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {children}
       </body>
     </html>
